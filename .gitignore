@@ -2,3 +2,6 @@ config.py
 .vscode*
 */__pycache__/*
 __pycache__/*
+dist/*
+*.egg-info/*
+build/*
