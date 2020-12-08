@@ -9,12 +9,15 @@ ie:
 username = 'frank@example.com'
 password = 'hunter2'
 """
-
+import sys
 import json
 from amberelectric import AmberElectric
 
+try:
+    from config import username, password
+except ImportError as error_message:
+    sys.exit(f"Failed to import config: {error_message}")
 
-from config import username, password
 
 API = AmberElectric(username=username, password=password)
 

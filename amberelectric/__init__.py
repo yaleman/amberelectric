@@ -7,7 +7,9 @@ import requests.exceptions
 URLS = {
     'auth' : "https://api-bff.amberelectric.com.au/api/v1.0/Authentication/SignIn",
     'prices' : 'https://api-bff.amberelectric.com.au/api/v1.0/Price/GetPriceList',
+    'pricesv2' : "https://api.amberelectric.com.au/prices/listprices",
     'getusage' : 'https://api-bff.amberelectric.com.au/api/v1.0/UsageHub/GetUsageForHub',
+    
 }
 
 class AmberElectric():
@@ -97,6 +99,29 @@ class AmberElectric():
         }
         return True
 
+    def getpricelistv2(self, **kwargs):
+        """ returns the pricing data from the official URL 
+        
+        inputs (one of):
+            - postcode (str) your post code (eg 12340)
+            - networkName (str) the name of the power network provider (eg 'Jemena')
+        """
+        if not ('postcode' in kwargs or 'networkName' in kwargs):
+            raise ValueError("you need to provide a postcode or networkName")
+        if 'postcode' in kwargs and not isinstance(kwargs.get('postcode'), str):
+            kwargs['postcode'] = str(kwargs.get('postcode'))
+            if '.' in kwargs.get('postcode'):
+                kwargs['postcode'] = kwargs.get('postcode').split(".")[0]
+        try:
+            response = requests.post(url=URLS.get('pricesv2'), json=kwargs)
+            response.raise_for_status()
+            return response.json()
+        except requests.exceptions.HTTPError as httperror:
+            print(f"dir(httperror):\n{dir(httperror)})")
+            print(f"response:\n{response})")
+            print(f"dir(response):\n{dir(response)}")
+            print(f"response.request.headers:\n{response.request.headers}")
+            print(f"response.request.body:\n{response.request.body}")
 
     def getpricelist(self, ):
         """ pulls the pricelist """
@@ -118,7 +143,7 @@ class AmberElectric():
             print(f"response.request:\n{response.request.headers}")
         if not response.json().get('serviceResponseType') == 1:
             raise Exception(f"Um, error? {json.dumps(jsondata, indent=4)}")
-        return jsondata.get('data')
+        return jsondata#.get('data')
         #'origin: https://app.amberelectric.com.au'
         # 'authority: api-bff.amberelectric.com.au'
         #  'pragma: no-cache'
