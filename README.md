@@ -1,3 +1,7 @@
+# Archived
+
+This project is no longer in development, I transferred ownership of the `amberelectric` Python package to Amber themselves.
+
 # amberelectric 
 
 Basic Amber Electric API munger, pulls usage data and pricing from your account.
